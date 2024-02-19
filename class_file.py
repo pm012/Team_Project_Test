@@ -2,6 +2,7 @@
 import re
 from collections import UserDict
 from datetime import datetime
+from dateutil.parser import parse
 
 
 class Field:
@@ -159,23 +160,18 @@ class Record:
     def __str__(self):
         return f"Contact name: {self.name.value}\n-phones: {'; '.join(p.value for p in self.phones)}\n-email: {'; '.join(p.value for p in self.email)}\n-address: {'; '.join(p.value for p in self.address)} \n-birthday: {self.birthday}\n-note: {self.note}\n"
 
-    def days_to_birthday(self):
-        """Function to find birthday"""
+    # days_to_birthday
+    def days_to_birthday(self)->int:
+        birthday = self.birthday.value
         current_date = datetime.now().date()
-        day, month, year = str(self.birthday).split(".")
-        if int(month) >= current_date.month:
-            birthday = datetime(year=current_date.year, month=int(month), day=int(day)).date()
-        else:
-            birthday = datetime(year=current_date.year+1, month=int(month), day=int(day)).date()
-
-        days = birthday - current_date
-
-        if days.days < 0:
-            raise Exception("Birthday passed")
-        elif days.days == 0:
-            raise Exception("Birthday today")
-        else:
-            raise Exception(f"There are {days.days} days left until the birthday")
+        birthday_date_this_year = parse(birthday, fuzzy=False).replace(year = datetime.now().year).date()
+        delta = birthday_date_this_year - current_date
+        # if birthdate in future current year
+        if delta.days>0:
+            return delta.days
+        else: 
+            # if birthdate in current year has passed (calculate days to next year's date)
+            return (birthday_date_this_year.replace(year=current_date.year+1) - current_date).days
 
 class AddressBook(UserDict):
     """Class representing a AddressBook"""
