@@ -170,7 +170,7 @@ class Record:
         if delta.days>0:
             return delta.days
         else: 
-            # if birthdate in current year has passed (calculate days to next year's date)
+            # If birthdate in current year has passed (calculate days to next year's date)
             return (birthday_date_this_year.replace(year=current_date.year+1) - current_date).days
 
 class AddressBook(UserDict):

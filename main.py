@@ -34,7 +34,7 @@ def start():
     with open('Data.bin', 'rb') as file:
         global book
         book = pickle.load(file)
-    return "Bot start"
+    return "Bot started"
 
 def save():
     """Save data"""
